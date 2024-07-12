@@ -3,6 +3,16 @@ from dataclasses import dataclass
 from typing import Any
 import re
 
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db
+
+# Passo 1: Inicializar o SDK do Firebase com as credenciais
+cred = credentials.Certificate('serviceAccountKey.json')  # Substitua com o caminho para o seu arquivo serviceAccountKey.json
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://glasses-bank-default-rtdb.firebaseio.com/'
+})
+
 class CadastroCliente(BaseModel):
     name: str
     cpf: str
@@ -40,6 +50,7 @@ class CadastroCliente(BaseModel):
 #         'age': int(input('Digite sua idade: ')),
 #         'bith_date': input('Digite sua data de nascimento: ')
 #         }
+cliente =  db.reference('Clientes')
 
 nome = {'name': 'Paulo',
         'cpf': '04995386505',
@@ -49,4 +60,8 @@ nome = {'name': 'Paulo',
         'age': 19,
         'bith_date': '12/02/2005'
         }
-print(dict(CadastroCliente(**nome)))
+
+cliente = cliente.child('1')
+data = (dict(CadastroCliente(**nome)))
+
+cliente.set(data)
